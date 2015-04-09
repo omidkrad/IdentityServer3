@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2014, 2015 Dominick Baier, Brock Allen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-using IdentityServer3.Core.Resources;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Thinktecture.IdentityServer.Core.Resources;
 
-namespace IdentityServer3.Core.Configuration.Hosting
+namespace IdentityServer.Core.Configuration.Hosting
 {
     internal class RequireSslMiddleware
     {
@@ -35,7 +35,12 @@ namespace IdentityServer3.Core.Configuration.Hosting
         {
             var context = new OwinContext(env);
 
-            if (context.Request.Uri.Scheme != Uri.UriSchemeHttps)
+            var isSecureConnection = context.Request.IsSecure ||
+                String.Equals(context.Request.Headers["X-Forwarded-Proto"], Uri.UriSchemeHttps,
+                StringComparison.InvariantCultureIgnoreCase);
+
+
+            if (!isSecureConnection)
             {
                 context.Response.StatusCode = 403;
                 context.Response.ReasonPhrase = Messages.SslRequired;
