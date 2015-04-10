@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using Thinktecture.IdentityServer.Core.Extensions;
 
 namespace Owin
@@ -34,7 +35,7 @@ namespace Owin
                 var origin = publicOrigin;
                 if (origin.IsMissing())
                 {
-                    origin = request.Uri.Scheme + "://" + request.Host.Value;
+                    origin = Uri.UriSchemeHttps + "://" + request.Host.Value;
                 }
 
                 ctx.Environment.SetIdentityServerHost(origin);
